@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Nav } from "./nav/nav";
+import { Account } from './_services/account';
+import { Home } from "./home/home";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [Nav, Home],
   templateUrl: './app.html',
   styleUrl: './app.css',
   standalone: true
@@ -12,17 +13,23 @@ import { RouterOutlet } from '@angular/router';
 
 export class App implements OnInit {
   
-  http = inject(HttpClient);
+  
+  accountService = inject(Account);
   protected readonly title = signal('Client');
-  users = signal<any[]>([]);
+  
 
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/users').subscribe({
-      next: response => this.users.set(response as any[]),
-      error: error => console.log(error),
-      complete: () => console.log('Request completed')
-    })
+    this.setCurrentUser();
   }
+
+  setCurrentUser(){
+    const userString = localStorage.getItem('user');
+    if (!userString) return;
+    const user = JSON.parse(userString);  
+    this.accountService.currentUser.set(user);
+  }
+
+
 
   
 }
