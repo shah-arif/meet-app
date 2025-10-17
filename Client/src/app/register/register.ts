@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { Account } from '../_services/account';
 import { ToastrService } from 'ngx-toastr';
 
-
 @Component({
   selector: 'app-register',
   imports: [FormsModule],
@@ -13,9 +12,8 @@ import { ToastrService } from 'ngx-toastr';
 export class Register {
   private accountService = inject(Account);
   private toastr = inject(ToastrService);
-  usersFromHomeComponent = input.required<any[]>();
   cancelRegister = output<boolean>();
-  model: any = {};
+  model: any = {}
 
   register() {
     this.accountService.register(this.model).subscribe({
@@ -25,7 +23,6 @@ export class Register {
       },
       error: error => this.toastr.error(error.error)
     })
-
   }
 
   cancel() {

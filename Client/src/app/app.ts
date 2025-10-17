@@ -1,35 +1,26 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { Nav } from "./nav/nav";
 import { Account } from './_services/account';
-import { RouterOutlet } from '@angular/router';
+import { Home } from "./home/home";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet,Nav],
+  imports: [RouterOutlet, Nav],
   templateUrl: './app.html',
-  styleUrl: './app.css',
-  standalone: true
+  styleUrl: './app.css'
 })
-
-export class App implements OnInit {
-  
-  
-  accountService = inject(Account);
-  protected readonly title = signal('Client');
-  
+export class App {
+  private accountService = inject(Account);
 
   ngOnInit(): void {
     this.setCurrentUser();
   }
 
-  setCurrentUser(){
+  setCurrentUser() {
     const userString = localStorage.getItem('user');
     if (!userString) return;
-    const user = JSON.parse(userString);  
+    const user = JSON.parse(userString);
     this.accountService.currentUser.set(user);
   }
-
-
-
-  
 }
