@@ -6,10 +6,11 @@ import { Members } from '../../_services/members';
 import { TabsetComponent, TabsModule } from "ngx-bootstrap/tabs";
 import { FormsModule, NgModel } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { PhotoEditor } from "../photo-editor/photo-editor";
 
 @Component({
   selector: 'app-member-edit',
-  imports: [TabsModule, FormsModule],
+  imports: [TabsModule, FormsModule, PhotoEditor],
   templateUrl: './member-edit.html',
   styleUrl: './member-edit.css'
 })
@@ -18,7 +19,8 @@ export class MemberEdit implements OnInit {
   @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
     if (this.editForm?.dirty) {
       $event.returnValue = true;
-    }}
+    }
+  }
   private accountService = inject(Account);
   private memberService = inject(Members);
   private toastr = inject(ToastrService);
@@ -47,19 +49,23 @@ export class MemberEdit implements OnInit {
   // }
 
   updateMember() {
-  const updatedData = this.editForm?.value;
+    const updatedData = this.editForm?.value;
 
-  this.memberService.updateMember(updatedData).subscribe({
-    next: _ => {
-      this.toastr.success('Profile updated successfully');
+    this.memberService.updateMember(updatedData).subscribe({
+      next: _ => {
+        this.toastr.success('Profile updated successfully');
 
-      // ✅ Merge updated values into the signal
-      this.member.update(current => current ? { ...current, ...updatedData } as Member : current);
+        // ✅ Merge updated values into the signal
+        this.member.update(current => current ? { ...current, ...updatedData } as Member : current);
 
-      // ✅ Reset form with updated data
-      this.editForm?.reset(this.member());
-    }
-  });
-}
+        // ✅ Reset form with updated data
+        this.editForm?.reset(this.member());
+      }
+    });
+  }
+
+  onMemberChange(event: Member) {
+    this.member.set(event);
+  }
 
 }
